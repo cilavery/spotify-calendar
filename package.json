@@ -5,7 +5,7 @@
   "engines": {
     "node": ">= 7.0.0"
   },
-  "main": "index.js",
+  "main": "./FRONTEND/index.js",
   "scripts": {
     "build-client": "webpack",
     "build-client-watch": "webpack -w",
@@ -32,16 +32,18 @@
       "git add"
     ]
   },
-  "author": "Fullstack Academy of Code",
+  "author": "Fullstack Academy",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.15.3",
     "body-parser": "^1.16.1",
     "compression": "^1.7.1",
     "connect-session-sequelize": "^4.1.0",
+    "date-fns": "^1.29.0",
     "express": "^4.14.1",
     "express-session": "^1.15.1",
     "history": "^4.6.3",
+    "moment": "^2.22.2",
     "morgan": "^1.8.1",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
