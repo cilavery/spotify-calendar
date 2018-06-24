@@ -1,5 +1,10 @@
 import axios from 'axios';
 
+//initial state
+const initialState = {
+  events: []
+}
+
 //action types
 const GET_ALL_EVENTS = 'GET_ALL_EVENTS';
 const ADD_EVENT = 'ADD_EVENT';
@@ -21,7 +26,7 @@ const addEvent = event => {
 
 //reducer
 
-export default function (state = {}, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case GET_ALL_EVENTS:
       return {...state, events: action.events}

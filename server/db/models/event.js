@@ -8,15 +8,16 @@ const EventSchema = db.define('eventSchema', {
     allowNull: false
   },
   startTime: {
-    type: Sequelize.STRING,
+    type: Sequelize.DATE,
     allowNull: false
   },
   endTime: {
-    type: Sequelize.STRING,
+    type: Sequelize.DATE,
     allowNull: false
   },
   date: {
-    type: Sequelize.STRING
+    type: Sequelize.DATE,
+    allowNull: false
   }
 })
 

@@ -1,69 +1,29 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import dateFns from 'date-fns';
 import { getEvents } from '../store';
 
 class EventList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      todaysEvents: []
-    }
-  }
 
-  componentDidMount() {
-    this.props.loadAllEvents();
-  }
-
-  renderEvents() {
-    let dayEvents = this.props.todaysEvents;
-    let eventArr = [];
-    let match = dayEvents && dayEvents.filter(event => {
-      let formatEvents = dateFns.format(event.date, 'MM DD YYYY')
-      return dateFns.isEqual(this.props.currentDay, formatEvents)
-    }).map(eventListing => {
-      let eventArr = []
-      eventArr.push(eventListing.startTime, ' - ', eventListing.endTime, ' ',eventListing.event)
-      return eventArr
+  renderEvents(events) {
+    return events.map((e,idx) => {
+      let start = dateFns.format(e.startTime, 'h:mm a')
+      let end = dateFns.format(e.endTime, 'h:mm a')
+      return (
+        <div className="event-list" key={idx}>
+          {`${start}-${end}`} <strong>{e.event}</strong>
+        </div>
+      )
     })
-
-    return (
-      <div>
-      {
-        match && match.map(event => {
-          return (
-            <div className="day_events" key={event}>
-              <p className="event-list">{event}</p>
-            </div>
-          )
-        })
-      }
-      </div>
-    )
   }
 
   render() {
     return (
       <div>
-        {this.renderEvents()}
+        {this.renderEvents(this.props.dayEvents)}
       </div>
     )
   }
 
 }
 
-const mapStateToProps = (state) => {
-  return {
-    todaysEvents: state.events
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadAllEvents: function() {
-      dispatch(getEvents())
-    }
-  }
-}
-
-export default EventList = connect(mapStateToProps, mapDispatchToProps)(EventList)
+export default EventList
