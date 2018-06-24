@@ -255,6 +255,10 @@ main {
   height: 0em;
 }
 
+.delete-link {
+  padding-left: 1em;
+}
+
 #exit-btn {
   margin-top: 2em;
 }

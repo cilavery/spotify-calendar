@@ -20,5 +20,18 @@ router.post('/', (req, res, next) => {
 })
 
 
-router.delete('/') //by id
-router.put('/') //by id
+router.delete('/delete/:id', (req, res, next) => {
+  let eventId = req.params.id
+  Event.destroy({
+    where: {
+      id: eventId
+    }
+  })
+  .then(() => res.sendStatus(204))
+  .catch(err => console.error(err))
+});
+
+
+router.put('/:id', (req, res, next) => {
+
+})

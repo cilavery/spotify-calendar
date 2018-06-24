@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { postEvent } from '../store';
+import { Link } from 'react-router-dom';
+import { postEvent, deleteEventThunk } from '../store';
 import dateFns from 'date-fns';
+import { Delete } from './Delete';
 
 class EventPop extends Component {
   constructor(props) {
@@ -19,12 +21,7 @@ class EventPop extends Component {
     this.exitPopup = this.exitPopup.bind(this);
   }
 
-  componentDidMount() {
-
-  }
-
   submitEvent(e) {
-    console.log('start', this.state.startTime, 'end', this.state.endTime)
     e.preventDefault();
     let eventStartTime = new Date(this.state.date);
     let eventEndTime = new Date(this.state.date);
@@ -99,6 +96,7 @@ class EventPop extends Component {
       return (
         <div className="event-list" key={idx}>
           {`${start}-${end}`} <strong>{e.event}</strong>
+          <Link to={`/event/delete/${e.id}`} onClick={() => this.props.onDeleteEvent(e.id)} className="delete-link">delete</Link>
         </div>
       )
     })
@@ -110,11 +108,7 @@ class EventPop extends Component {
       <div className="popup">
         <div className="popup_inner">
           <h3>Today's Events</h3>
-          {
-            <div>{this.renderEvents(this.props.allEvents)}</div>
-
-          }
-
+          {<div>{this.renderEvents(this.props.allEvents)}</div>}
           <h3>Add A New Event</h3>
           <form className="event_time" onSubmit={this.submitEvent}>
             <input className="timeSet" type="text" placeholder="Event Name" name="event" onChange={this.handleChange}></input>
@@ -147,6 +141,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onAddEvent(body) {
       dispatch(postEvent(body))
+    },
+    onDeleteEvent(id) {
+      dispatch(deleteEventThunk(id))
     }
   }
 }
