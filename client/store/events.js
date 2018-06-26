@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { browserHistory } from 'react-router';
-
 
 //initial state
 const initialState = {
@@ -10,7 +8,8 @@ const initialState = {
 //action types
 const GET_ALL_EVENTS = 'GET_ALL_EVENTS';
 const ADD_EVENT = 'ADD_EVENT';
-const DELETE_EVENT = 'DELETE_EVENT'
+const DELETE_EVENT = 'DELETE_EVENT';
+const UPDATE_EVENT = 'UPDATE_EVENT';
 
 //action creator
 const getAllEvents = events => {
@@ -34,9 +33,17 @@ const deleteEvent = eventId => {
   }
 }
 
+const updateEvent = event => {
+  return {
+    type: UPDATE_EVENT,
+    event
+  }
+}
+
 //reducer
 
 export default function (state = initialState, action) {
+  console.log('ACTION', action)
   switch (action.type) {
     case GET_ALL_EVENTS:
       return {...state, events: action.events}
@@ -45,6 +52,11 @@ export default function (state = initialState, action) {
     case DELETE_EVENT:
       let filteredEvents = state.events.filter(event => event.id !== action.eventId)
       return {...state, events: filteredEvents}
+    case UPDATE_EVENT:
+      let updateEvents = state.events.map(event => {
+        return event.id === action.event.id ? action.event : event
+      })
+      return {...state, events: updateEvents}
     default:
       return state
   }
@@ -74,6 +86,17 @@ export const deleteEventThunk = (eventId) => {
   return (dispatch) => {
     axios.delete(`/api/event/delete/${eventId}`)
     .then(() => dispatch(deleteEvent(eventId)))
+    .catch(err => console.error(err))
+  }
+}
+
+export const updateEventThunk = (eventId, body) => {
+  return (dispatch) => {
+    axios.put(`/api/event/update/${eventId}`, body)
+    .then(updated => {
+      console.log('UPDATED', updated  )
+      dispatch(updateEvent(updated))
+    })
     .catch(err => console.error(err))
   }
 }

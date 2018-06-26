@@ -5,5 +5,3 @@
  */
 export {default as Calendar} from './Calendar';
 export {default as Footer} from './Footer';
-export {default as Delete} from './Delete';
-

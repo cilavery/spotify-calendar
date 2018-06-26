@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import history from '../history';
 import { postEvent, deleteEventThunk } from '../store';
 import dateFns from 'date-fns';
-import { Delete } from './Delete';
+import EditEvent from './EditEvent';
 
 class EventPop extends Component {
   constructor(props) {
@@ -13,12 +14,19 @@ class EventPop extends Component {
       events: [],
       startTime: 0,
       endTime: 0,
-      date: this.props.eventDate
+      date: this.props.eventDate,
+      isEditing: false,
+      eventToEditId: 0,
+      eventNameToEdit: '',
+      eventStartToEdit: new Date(),
+      eventEndToEdit: new Date(),
+      eventDayToEdit: new Date()
     }
 
     this.submitEvent = this.submitEvent.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.exitPopup = this.exitPopup.bind(this);
+    this.toggleEditEvents = this.toggleEditEvents.bind(this);
   }
 
   submitEvent(e) {
@@ -78,6 +86,18 @@ class EventPop extends Component {
 
   exitPopup() {
     this.props.togglePopup();
+    history.push('/')
+  }
+
+  toggleEditEvents(eventId, name, start, end, day) {
+    this.setState({
+      isEditing: !this.state.isEditing,
+      eventToEditId: eventId,
+      eventNameToEdit: name,
+      eventStartToEdit: start,
+      eventEndToEdit: end,
+      eventDayToEdit: day
+    })
   }
 
  renderEvents(events) {
@@ -96,7 +116,8 @@ class EventPop extends Component {
       return (
         <div className="event-list" key={idx}>
           {`${start}-${end}`} <strong>{e.event}</strong>
-          <Link to={`/event/delete/${e.id}`} onClick={() => this.props.onDeleteEvent(e.id)} className="delete-link">delete</Link>
+          <Link to={`/event/delete/${e.id}`} onClick={() => this.props.onDeleteEvent(e.id)} className="edit-link">delete</Link>
+          <Link to={`/event/update/${e.id}`} className="edit-link" onClick={() => this.toggleEditEvents(e.id, e.event, start, end, e.date)}>Edit Event</Link>
         </div>
       )
     })
@@ -108,7 +129,18 @@ class EventPop extends Component {
       <div className="popup">
         <div className="popup_inner">
           <h3>Today's Events</h3>
-          {<div>{this.renderEvents(this.props.allEvents)}</div>}
+          {
+            this.state.isEditing
+            ? <div><EditEvent
+            editId={this.state.eventToEditId}
+            editName={this.state.eventNameToEdit}
+            editStart={this.state.eventStartToEdit}
+            editEnd={this.state.eventEndToEdit}
+            editDay={this.state.eventDayToEdit}/><Link to='/event' onClick={this.toggleEditEvents}>
+            <button>Go Back</button></Link></div>
+            : <div>{this.renderEvents(this.props.allEvents)}</div>
+          }
+
           <h3>Add A New Event</h3>
           <form className="event_time" onSubmit={this.submitEvent}>
             <input className="timeSet" type="text" placeholder="Event Name" name="event" onChange={this.handleChange}></input>

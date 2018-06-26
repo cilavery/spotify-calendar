@@ -7,7 +7,6 @@ class Routes extends Component {
     return (
       <Switch>
         <Route exact path="/" component={Main} />
-        <Route exact path='/delete/:id' component={Delete} />
       </Switch>
     )
   }

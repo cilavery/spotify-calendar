@@ -32,6 +32,21 @@ router.delete('/delete/:id', (req, res, next) => {
 });
 
 
-router.put('/:id', (req, res, next) => {
-
+router.put('/update/:id', (req, res, next) => {
+  let eventId = req.params.id
+  let body = req.body
+  Event.update(req.body, {
+    where: {
+      id: eventId
+    },
+    returning: true
+  })
+  .then(res => {
+    const updated = res[1][0].dataValues;
+    res.json({
+      message: 'event updated',
+      evet: updated
+    });
+  })
+  .catch(err => console.error(err));
 })

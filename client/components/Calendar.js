@@ -152,6 +152,7 @@ class Calendar extends Component {
   }
 
   render() {
+    console.log('props after update in Calendar.js', this.props)
     return (
       <div className="calendar">
         {this.renderHeader()}
