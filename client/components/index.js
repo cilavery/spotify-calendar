@@ -4,5 +4,4 @@
  * having to figure out which file they belong to!
  */
 export {default as Calendar} from './Calendar';
-export{default as Footer} from './Footer';
-
+export {default as Footer} from './Footer';

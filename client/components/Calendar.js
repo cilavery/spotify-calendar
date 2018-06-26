@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import dateFns from 'date-fns';
 import EventPop from './EventPop';
 import EventList from './EventList';
+import { connect } from 'react-redux';
+import { getEvents } from '../store';
+
 
 class Calendar extends Component {
   constructor (props) {
@@ -10,7 +13,6 @@ class Calendar extends Component {
       today: new Date(),
       currentMonth: new Date(),
       selectedDate: new Date(),
-      todaysEvents: {},
       showPopup: false
     }
   this.onDateClick = this.onDateClick.bind(this);
@@ -18,6 +20,10 @@ class Calendar extends Component {
   this.nextMonth = this.nextMonth.bind(this);
   this.prevMonth = this.prevMonth.bind(this);
   this.togglePopup = this.togglePopup.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.loadAllEvents();
   }
 
   renderHeader() {
@@ -61,7 +67,15 @@ class Calendar extends Component {
     return <div className="days row">{days}</div>
   }
 
-  renderCells() {
+  getEventsForDay(theDay, allEvents) {
+    let formattedDay = dateFns.format(theDay, 'MM-DD-YYYY')
+    return allEvents.filter(event => {
+      let formattedEvent = dateFns.format(event.date, 'MM-DD-YYYY')
+      return formattedEvent === formattedDay
+    })
+  }
+
+  renderCells(allEvents) {
     const { currentMonth, selectedDate } = this.state;
     const monthStart = dateFns.startOfMonth(currentMonth);
     const monthEnd = dateFns.endOfMonth(monthStart);
@@ -82,10 +96,13 @@ class Calendar extends Component {
         formattedEventsDate = dateFns.format(day, 'MM DD YYYY');
 
         const cloneDay = day;
+
+        const dayEvents = this.getEventsForDay(day, allEvents);
+
         days.push(
           <div className={`col cell ${!dateFns.isSameMonth(day, monthStart) ? "disabled" : dateFns.isSameDay(day, selectedDate) ? "selected" : ''}`} key={day} onClick={() => this.onDateClick(dateFns.parse(cloneDay))}>
           <span>{formattedDate}</span>
-          <EventList currentDay={formattedEventsDate}/>
+          <EventList dayEvents={dayEvents}/>
           </div>
         )
         day = dateFns.addDays(day, 1);
@@ -139,7 +156,7 @@ class Calendar extends Component {
       <div className="calendar">
         {this.renderHeader()}
         {this.renderDays()}
-        {this.renderCells()}
+        {this.renderCells(this.props.allEvents)}
         {
           this.state.showPopup
           ? <EventPop togglePopup={this.togglePopup} eventDate={this.state.selectedDate} />
@@ -151,6 +168,20 @@ class Calendar extends Component {
 
 }
 
+const mapStateToProps = (state) => {
+  return {
+    allEvents: state.events
+  }
+}
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loadAllEvents: function() {
+      dispatch(getEvents())
+    }
+  }
+}
 
-export default Calendar
+//export default Calendar
+export default Calendar = connect(mapStateToProps, mapDispatchToProps)(Calendar)
+
