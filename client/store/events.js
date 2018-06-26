@@ -43,7 +43,6 @@ const updateEvent = event => {
 //reducer
 
 export default function (state = initialState, action) {
-  console.log('ACTION', action)
   switch (action.type) {
     case GET_ALL_EVENTS:
       return {...state, events: action.events}
@@ -94,8 +93,7 @@ export const updateEventThunk = (eventId, body) => {
   return (dispatch) => {
     axios.put(`/api/event/update/${eventId}`, body)
     .then(updated => {
-      console.log('UPDATED', updated  )
-      dispatch(updateEvent(updated))
+      dispatch(updateEvent(updated.data.event))
     })
     .catch(err => console.error(err))
   }

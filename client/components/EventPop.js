@@ -31,6 +31,7 @@ class EventPop extends Component {
 
   submitEvent(e) {
     e.preventDefault();
+    //parse input date data into useable date format
     let eventStartTime = new Date(this.state.date);
     let eventEndTime = new Date(this.state.date);
     let startHour = this.parseHour(this.state.startTime);
@@ -136,7 +137,8 @@ class EventPop extends Component {
             editName={this.state.eventNameToEdit}
             editStart={this.state.eventStartToEdit}
             editEnd={this.state.eventEndToEdit}
-            editDay={this.state.eventDayToEdit}/><Link to='/event' onClick={this.toggleEditEvents}>
+            editDay={this.state.eventDayToEdit}
+            toggleEditView={this.toggleEditEvents}/><Link to='/event' onClick={this.toggleEditEvents}>
             <button>Go Back</button></Link></div>
             : <div>{this.renderEvents(this.props.allEvents)}</div>
           }

@@ -41,11 +41,11 @@ router.put('/update/:id', (req, res, next) => {
     },
     returning: true
   })
-  .then(res => {
-    const updated = res[1][0].dataValues;
+  .then(response => {
+    const updated = response[1][0].dataValues;
     res.json({
       message: 'event updated',
-      evet: updated
+      event: updated
     });
   })
   .catch(err => console.error(err));

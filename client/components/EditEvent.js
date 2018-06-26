@@ -9,9 +9,10 @@ class EditEvent extends Component {
     this.state = {
       id: this.props.editId,
       event: this.props.editName,
-      start: this.props.editStart,
-      end: this.props.editEnd,
-      day: this.props.editDay
+      day: this.props.editDay,
+      editedStart: null,
+      editedEnd: null,
+      editedDate: null
     }
 
     this.submitEvent = this.submitEvent.bind(this);
@@ -20,26 +21,39 @@ class EditEvent extends Component {
 
   submitEvent(e) {
     e.preventDefault();
-    let eventStartTime = new Date(this.state.day);
-    let eventEndTime = new Date(this.state.day);
-    let startHour = this.parseHour(this.state.start);
-    let startMin = this.parseMin(this.state.start);
-    let endHour = this.parseHour(this.state.end);
-    let endMin = this.parseMin(this.state.end);
-
-    eventStartTime.setHours(startHour);
-    eventStartTime.setMinutes(startMin);
-    eventEndTime.setHours(endHour);
-    eventEndTime.setMinutes(endMin);
-
+    let eventStartTime;
+    let eventEndTime;
     let body = {
       event: this.state.event,
-      startTime: eventStartTime,
-      endTime: eventEndTime,
-      date: this.state.day
+    };
+
+    if (this.state.editedDate) {
+      //added 'Eastern Daylight Time to handle 4 hour offset of times set within 4 hours of midnight. Would have to dynamically update timezone based on user's location
+      let newDate = new Date(`${this.state.editedDate} EDT`);
+      body.date = newDate;
     }
+
+    if (this.state.editedStart) {
+      this.state.editedDate ? eventStartTime = new Date(this.state.editedDate) : new Date(this.state.day);
+      let startHour = this.parseHour(this.state.editedStart);
+      let startMin = this.parseMin(this.state.editedStart);
+      eventStartTime.setHours(startHour);
+      eventStartTime.setMinutes(startMin);
+      body.startTime = eventStartTime;
+    }
+
+    if (this.state.editedEnd) {
+      this.state.editedDate ? eventEndTime = new Date(this.state.editedDate) : new Date(this.state.day);
+      let endHour = this.parseHour(this.state.editedEnd);
+      let endMin = this.parseMin(this.state.editedEnd);
+      eventEndTime.setHours(endHour);
+      eventEndTime.setMinutes(endMin);
+      body.endTime = eventEndTime;
+    }
+
     let id = this.state.id
     this.props.onUpdateEvent(id, body);
+    this.props.toggleEditView();
     history.push('/')
   }
 
@@ -67,7 +81,6 @@ class EditEvent extends Component {
     }
   }
 
-  //if user changes hours
   handleChange(e) {
     this.setState({
       [e.target.name]: e.target.value
@@ -79,15 +92,15 @@ class EditEvent extends Component {
       <div>
          <form className="event_time" onSubmit={this.submitEvent}>
             <input className="timeSet" type="text" name="event" onChange={this.handleChange} value={this.state.event}></input>
-            <input className="timeSet" type="date" name="day" onChange={this.handleChange} defaultValue={this.state.day}></input>
+            <input className="timeSet" type="date" name="editedDate" onChange={this.handleChange}></input>
             <div className="start_end_time">
               <div className="timeSet">
                 <p>Start Time:</p>
-                <input type="time" name="start" onChange={this.handleChange} defaultValue="13:00"></input>
+                <input type="time" name="editedStart" onChange={this.handleChange} defaultValue="13:00"></input>
               </div>
               <div className="timeSet">
                 <p>End Time:</p>
-                <input type="time" name="end" onChange={this.handleChange} defaultValue="13:00"></input>
+                <input type="time" name="editedEnd" onChange={this.handleChange} defaultValue="13:00"></input>
               </div>
             </div>
             <button type="submit">Update Event</button>
