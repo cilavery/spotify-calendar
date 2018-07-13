@@ -31,10 +31,12 @@ class EditEvent extends Component {
       //added 'Eastern Daylight Time to handle 4 hour offset of times set within 4 hours of midnight. Would have to dynamically update timezone based on user's location
       let newDate = new Date(`${this.state.editedDate} EDT`);
       body.date = newDate;
+    } else {
+      body.date = this.state.day
     }
 
     if (this.state.editedStart) {
-      this.state.editedDate ? eventStartTime = new Date(this.state.editedDate) : new Date(this.state.day);
+      this.state.editedDate ? eventStartTime = new Date(this.state.editedDate) : eventStartTime = new Date(this.state.day);
       let startHour = this.parseHour(this.state.editedStart);
       let startMin = this.parseMin(this.state.editedStart);
       eventStartTime.setHours(startHour);
@@ -43,7 +45,7 @@ class EditEvent extends Component {
     }
 
     if (this.state.editedEnd) {
-      this.state.editedDate ? eventEndTime = new Date(this.state.editedDate) : new Date(this.state.day);
+      this.state.editedDate ? eventEndTime = new Date(this.state.editedDate) : eventEndTime = new Date(this.state.day);
       let endHour = this.parseHour(this.state.editedEnd);
       let endMin = this.parseMin(this.state.editedEnd);
       eventEndTime.setHours(endHour);
