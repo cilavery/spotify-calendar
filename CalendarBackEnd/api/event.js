@@ -28,7 +28,7 @@ router.delete('/delete/:id', (req, res, next) => {
     }
   })
   .then(() => res.sendStatus(204))
-  .catch(err => console.error(err))
+  .catch(next)
 });
 
 
@@ -48,5 +48,5 @@ router.put('/update/:id', (req, res, next) => {
       event: updated
     });
   })
-  .catch(err => console.error(err));
+  .catch(next);
 })
